@@ -1,0 +1,1 @@
+Client与Server的源代码编译后，请把本文件夹中的mingw problem 及syu.jpg拷贝到生成的可执行程序 对应的目录下

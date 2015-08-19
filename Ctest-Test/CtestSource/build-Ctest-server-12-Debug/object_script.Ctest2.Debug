@@ -1,0 +1,17 @@
+INPUT(
+./debug/main.o
+./debug/widget.o
+./debug/practise.o
+./debug/process.o
+./debug/addproblem.o
+./debug/contest.o
+./debug/competition.o
+./debug/score.o
+./debug/moc_widget.o
+./debug/moc_practise.o
+./debug/moc_process.o
+./debug/moc_addproblem.o
+./debug/moc_contest.o
+./debug/moc_competition.o
+./debug/moc_score.o
+);

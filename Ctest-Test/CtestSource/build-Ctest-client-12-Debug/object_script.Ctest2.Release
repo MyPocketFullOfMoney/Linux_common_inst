@@ -1,0 +1,15 @@
+INPUT(
+./release/main.o
+./release/widget.o
+./release/practise.o
+./release/process.o
+./release/addproblem.o
+./release/contest.o
+./release/competition.o
+./release/moc_widget.o
+./release/moc_practise.o
+./release/moc_process.o
+./release/moc_addproblem.o
+./release/moc_contest.o
+./release/moc_competition.o
+);
