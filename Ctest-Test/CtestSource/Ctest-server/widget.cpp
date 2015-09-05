@@ -10,7 +10,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     QPixmap *pix;
     QString pixname;
-    pixname="syu.png";
+    pixname=":/images/syu.png";
     pix=new QPixmap(pixname);
     ui->label_Picture->setPixmap(*pix);
 
@@ -161,8 +161,8 @@ void Widget::acceptServer()
 {
 
     QByteArray datagram=0;
-    //while(receiver->hasPendingDatagrams())  //拥有等待的数据报
-    //{
+    while(receiver->hasPendingDatagrams())  //拥有等待的数据报
+    {
 
              //拥于存放接收的数据报
             datagram.resize(receiver->pendingDatagramSize());
@@ -177,7 +177,7 @@ void Widget::acceptServer()
             qDebug()<<"received a data package";
             qDebug()<<messageType<<message<<HostName<<ipAddress;
         //}
-            if(messageType=="SearchS")
+            if(messageType=="SearchServer")
             {
                 //这里需要记录已经连接的Client IP
 
@@ -209,6 +209,7 @@ void Widget::acceptServer()
 
 
             }
+    }
 }
 
 void Widget::sendUdpMessage(QString messageType, QString message, QString IPaddress)

@@ -5,6 +5,12 @@
 #include<QtNetwork>
 #include"competition.h"
 #include<QTimer>
+#include <QDir>
+#include <QFileInfo>
+#include <QString>
+#include <QList>
+#include <QFileInfo>
+#include <QFile>
 namespace Ui {
 class Widget;
 }
@@ -35,12 +41,12 @@ private slots:
     void searchServer();
 
     void on_pushButton_end_clicked();
+    bool removeFolderContent(const QString &folderDir);
+    //void on_label_Time_linkActivated(const QString &link);
 
-    void on_label_Time_linkActivated(const QString &link);
+    //void on_label_Time_objectNameChanged(const QString &objectName);
 
-    void on_label_Time_objectNameChanged(const QString &objectName);
-
-    void on_label_state_windowTitleChanged(const QString &title);
+    //void on_label_state_windowTitleChanged(const QString &title);
 
 private:
     Ui::Widget *ui;

@@ -36,3 +36,6 @@ FORMS    += widget.ui \
     contest.ui \
     competition.ui \
     score.ui
+
+RESOURCES += \
+    picture.qrc

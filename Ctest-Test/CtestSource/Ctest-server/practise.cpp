@@ -54,7 +54,6 @@ void practise::load_Problem()
         }
         else
         {
-
             line =line.fromLocal8Bit(File->readLine());
             QStringList SL=line.split('\n');
             line=SL.at(0);
@@ -197,9 +196,9 @@ void practise::on_pushButton_Practise_clicked()
                 sout->close();
             }
 
-        }
-        qDebug()<<"Result Compare:"<<endl<<Result1<<endl<<Result2;
-        if(Result1==Result2)
+        }        
+        qDebug()<<"Result Compare:"<<endl<<Result1.trimmed()<<endl<<Result2.trimmed();
+        if(Result1.trimmed()==Result2.trimmed())
         {
             QMessageBox::warning(this,tr("Accepted"),tr("You get 100 points!"));
             Score[row]=100;

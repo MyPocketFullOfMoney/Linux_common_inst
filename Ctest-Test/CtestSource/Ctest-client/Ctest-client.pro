@@ -33,3 +33,6 @@ FORMS    += widget.ui \
     addproblem.ui \
     contest.ui \
     competition.ui
+
+RESOURCES += \
+    iamges.qrc

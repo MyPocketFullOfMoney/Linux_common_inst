@@ -10,7 +10,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     QPixmap *pix;
     QString pixname;
-    pixname="syu.png";
+    pixname=":images/syu.png";
     pix=new QPixmap(pixname);
     ui->label_Picture->setPixmap(*pix);
     ui->label_state->setText(QString::fromUtf8("服务器未连接"));
@@ -130,6 +130,7 @@ void Widget::on_pushButton_example_clicked()
          QMessageBox::warning(this,QString::fromUtf8("警告"),QString::fromUtf8("请输入正确的信息"));
     }
 }
+
 QString Widget::getHostIPv4(QString hostName)
 {
     QHostInfo Infotemp=QHostInfo::fromName(hostName);
@@ -168,8 +169,8 @@ void Widget::searchServer()
 void Widget:: authenServer()
 {
     QByteArray datagram=0;
-    //while(receiver->hasPendingDatagrams())  //拥有等待的数据报
-    //{
+    if(receiver->hasPendingDatagrams())  //拥有等待的数据报
+    {
 
              //拥于存放接收的数据报
             datagram.resize(receiver->pendingDatagramSize());
@@ -184,7 +185,7 @@ void Widget:: authenServer()
 
             qDebug()<<"received a data package";
             qDebug()<<messageType<<HostName<<ipAddress;
-       // }
+
             if(messageType=="AcceptS")
             {
 
@@ -207,6 +208,7 @@ void Widget:: authenServer()
                 qDebug()<<cmd;
                 system((cmd.toStdString()).c_str());
             }
+    }
 }
 
 void Widget::sendUdpMessage(QString messageType, QString message, QString IPaddress)
@@ -233,8 +235,12 @@ void Widget::acceptConnecion()
     tcpServerConnection=tcpServer->nextPendingConnection();
     connect(tcpServerConnection,SIGNAL(readyRead()),
             this,SLOT(updateServerProcess()));
-    //ui->label_state->setText("Accept connect");
-    //tcpServer->close();
+    QDir *tempDir = new QDir;
+    bool exist = tempDir->exists("problem");
+    if(!exist) {
+        ui->label_state->setText("接受服务器数据连接");
+    }
+
 
 }
 void Widget::updateServerProcess()
@@ -255,8 +261,23 @@ void Widget::updateServerProcess()
 
             in>>fileName;
 
+            QDir *tempDir = new QDir;
+            bool exist = tempDir->exists("problem");
+            if(!exist) {
+               if( tempDir->mkdir("problem") )
+               qDebug() << (tr("文件夹创建成功！"));
+            }
+            localFile=new QFile("problem//"+fileName);
+            if(localFile->exists()) {
+                ui->label_state->setText("考题下载完成！");
+                //return ;
+            } else {
+            ui->label_state->setText(tr("接收考题文件 %1 ...")
+                                            .arg(fileName));
+            }
+
             bytesReceived+=fileNameSize;
-            localFile=new QFile("problem\\"+fileName);
+
             if(!localFile->open(QFile::WriteOnly))
             {
                 qDebug()<<"Open file fail";
@@ -280,9 +301,10 @@ void Widget::updateServerProcess()
         //tcpServerConnection->disconnectFromHost();
         //tcpServerConnection->waitForDisconnected(1000);
         //tcpServerConnection->close();
+
         //tcpServer->close();
         localFile->close();
-
+        //qDebug() << (tr("考题%1传输完毕！").arg(fileName));
 
         reinit();
     }
@@ -293,14 +315,70 @@ void Widget::on_pushButton_end_clicked()
 {
     close();
 }
+
+bool Widget::removeFolderContent(const QString &folderDir)
+{
+    QDir dir(folderDir);
+    QFileInfoList fileList;
+    QFileInfo curFile;
+    if(!dir.exists())  {return false;}//文件不存，则返回false
+    fileList=dir.entryInfoList(QDir::Dirs|QDir::Files
+                               |QDir::Readable|QDir::Writable
+                               |QDir::Hidden|QDir::NoDotAndDotDot
+                               ,QDir::Name);
+    while(fileList.size()>0)//跳出条件
+    {
+        int infoNum=fileList.size();
+        for(int i=infoNum-1;i>=0;i--)
+        {
+            curFile=fileList[i];
+            if(curFile.isFile())//如果是文件，删除文件
+            {
+                QFile fileTemp(curFile.filePath());
+                fileTemp.remove();
+                fileList.removeAt(i);
+            }
+            if(curFile.isDir())//如果是文件夹
+            {
+                QDir dirTemp(curFile.filePath());
+                QFileInfoList fileList1=dirTemp.entryInfoList(QDir::Dirs|QDir::Files
+                                                              |QDir::Readable|QDir::Writable
+                                                              |QDir::Hidden|QDir::NoDotAndDotDot
+                                                              ,QDir::Name);
+                if(fileList1.size()==0)//下层没有文件或文件夹
+                {
+                    dirTemp.rmdir(".");
+                    fileList.removeAt(i);
+                }
+                else//下层有文件夹或文件
+                {
+                    for(int j=0;j<fileList1.size();j++)
+                    {
+                        if(!(fileList.contains(fileList1[j])))
+                            fileList.append(fileList1[j]);
+                    }
+                }
+            }
+        }
+    }
+   return true;
+}
 void Widget::closeEvent(QCloseEvent *event)
 {
-    QString FilePath="problem";
-    QString cmd;
+//    QString FilePath="problem";
+//    QString cmd;
 
-    cmd="del /q /s "+FilePath;
-    qDebug()<<cmd;
-    system((cmd.toStdString()).c_str());
+//    cmd="del /q /s "+FilePath;
+//    qDebug()<<cmd;
+//    system((cmd.toStdString()).c_str());
+    QDir *dir = new QDir;
+    if(removeFolderContent("problem"))
+        if(dir->rmdir("problem"))
+            qDebug() << (tr("所有考题删除成功！"));
+        else
+            qDebug() << (tr("考题删除失败！"));
+    else
+        qDebug() << (tr("考题删除失败！"));
 
     event->accept();
 }

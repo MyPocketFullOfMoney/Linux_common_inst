@@ -45,7 +45,7 @@ void Process::on_pushButton_Open_clicked()
 void Process::on_pushButton_Compile_clicked()
 {
 
-    QString gcc=tr("mingw/bin/gcc");
+    QString gcc=tr("gcc");
     QStringList arguments;
     ui->textEdit_Compile->clear();
     CompileResult=tr("");
@@ -99,7 +99,7 @@ void Process::on_pushButton_Run_clicked()
    QStringList arguments;
    QFile File(tmp);
    ui->textEdit_Result->clear();
-   RunResult=tr("");
+   //RunResult=tr("");
    if(CompileSuccess==1)
    {
        if(!File.exists())
@@ -119,7 +119,7 @@ void Process::on_pushButton_Run_clicked()
 }
 void Process::readOutput2()
 {
-    RunResult+=cmd2->readAll();
+    RunResult=cmd2->readAll();
 
 }
 void Process::readOutputError2()
